@@ -109,7 +109,7 @@ Input  (11 features) → Linear(256, ReLU) → Linear(3 outputs)
 - Current direction (4 bits)
 - Food relative position (4 bits)
 
-**Training:** ε-greedy exploration → experience replay → Bellman update  
+**Training:** ε-greedy exploration → experience replay → Bellman update
 **Saves:** Only when a new record score is beaten (never overwrites a good model)
 
 ---
@@ -139,17 +139,3 @@ Rank  Agent        Mean Score   Note
 | CO4 | Performance analysis | Marathon: 5 algorithms, 20k+ games |
 
 ---
-
-## 👥 Contributors
-
-- **Aarnya Jain** — 2401030209
-- **Amolik Agarwal** — 2401030193
-- **Vansh Garg** — 2401030202
-
-*JIIT Noida, B4 | AIML Lab Mini Project*
-
----
-
-## 📄 License
-
-MIT
