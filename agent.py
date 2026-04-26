@@ -1,3 +1,6 @@
+import csv
+import os
+import pygame
 import torch
 import random
 import numpy as np
@@ -18,6 +21,12 @@ class Agent:
         self.memory = deque(maxlen=MAX_MEMORY)
         self.model = Linear_QNet(11, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
+        # Auto-load solo model if it exists — continues from last checkpoint
+        _path = os.path.join('model', 'model_agent_solo.pth')
+        if os.path.exists(_path):
+            self.model.load_state_dict(
+                torch.load(_path, map_location='cpu', weights_only=False))
+            print(f'[agent] Loaded {_path}')
 
     def get_state(self, game):
         head = game.snake[0]
@@ -30,17 +39,17 @@ class Agent:
         dir_u = game.direction == Direction.UP
         dir_d = game.direction == Direction.DOWN
         state = [
-            (dir_r and game.is_collision(point_r)) or 
-            (dir_l and game.is_collision(point_l)) or 
-            (dir_u and game.is_collision(point_u)) or 
+            (dir_r and game.is_collision(point_r)) or
+            (dir_l and game.is_collision(point_l)) or
+            (dir_u and game.is_collision(point_u)) or
             (dir_d and game.is_collision(point_d)),
-            (dir_u and game.is_collision(point_r)) or 
-            (dir_d and game.is_collision(point_l)) or 
-            (dir_l and game.is_collision(point_u)) or 
+            (dir_u and game.is_collision(point_r)) or
+            (dir_d and game.is_collision(point_l)) or
+            (dir_l and game.is_collision(point_u)) or
             (dir_r and game.is_collision(point_d)),
-            (dir_d and game.is_collision(point_r)) or 
-            (dir_u and game.is_collision(point_l)) or 
-            (dir_r and game.is_collision(point_u)) or 
+            (dir_d and game.is_collision(point_r)) or
+            (dir_u and game.is_collision(point_l)) or
+            (dir_r and game.is_collision(point_u)) or
             (dir_l and game.is_collision(point_d)),
             dir_l,
             dir_r,
@@ -87,25 +96,54 @@ def train():
     record = 0
     agent = Agent()
     game = SnakeAI()
+
+    # CSV logging — fresh file each run
+    _csv = open('agent_training.csv', 'w', newline='')
+    _writer = csv.writer(_csv)
+    _writer.writerow(['game_num', 'score', 'record', 'mean_score'])
+    _csv.flush()
     while True:
         state_old = agent.get_state(game)
-        final_move = agent.get_action(state_old)
+
+        if game.demo_mode:
+            # pure exploitation — no exploration, no training
+            t = torch.tensor(state_old, dtype=torch.float)
+            move = torch.argmax(agent.model(t)).item()
+            final_move = [0, 0, 0]; final_move[move] = 1
+        else:
+            final_move = agent.get_action(state_old)
+
         reward, done, score = game.play_step(final_move)
-        state_new = agent.get_state(game)
-        agent.train_short_memory(state_old, final_move, reward, state_new, done)
-        agent.remember(state_old, final_move, reward, state_new, done)
+
+        # update window title to reflect mode
+        pygame.display.set_caption(
+            'snake: learning to live  [DEMO — D to train]'
+            if game.demo_mode else
+            'snake: learning to live  [TRAINING — D to demo]'
+        )
+
+        if not game.demo_mode:
+            state_new = agent.get_state(game)
+            agent.train_short_memory(state_old, final_move, reward, state_new, done)
+            agent.remember(state_old, final_move, reward, state_new, done)
         if done:
             game.reset()
             agent.n_games += 1
-            agent.train_long_memory()
-            if score > record:
-                record = score
-                agent.model.save()
-            print(f'game: {agent.n_games:4} | score: {score:3} | record: {record:3}')
+
+            if not game.demo_mode:
+                agent.train_long_memory()
+                if score > record:
+                    record = score
+                    agent.model.save('model_agent_solo.pth')
+
+            mode_tag = '[DEMO] ' if game.demo_mode else '[TRAIN]'
+            print(f'{mode_tag} game: {agent.n_games:4} | score: {score:3} | record: {record:3}')
             plot_scores.append(score)
             total_score += score
             mean_score = total_score / agent.n_games
             plot_mean_scores.append(mean_score)
+            _writer.writerow([agent.n_games, score, record, f'{mean_score:.3f}'])
+            _csv.flush()   # write immediately so data is safe even if interrupted
             plot(plot_scores, plot_mean_scores)
 
 if __name__ == '__main__':

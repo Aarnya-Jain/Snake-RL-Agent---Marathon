@@ -1,0 +1,640 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{fontawesome5}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{mdframed}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{lato}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+
+\renewcommand{\familydefault}{\sfdefault}
+\usetikzlibrary{shapes,arrows,positioning,shadows,calc,er}
+
+% Define color palette
+\definecolor{jiitblue}{RGB}{0, 51, 102}
+\definecolor{jiitgold}{RGB}{255, 204, 0}
+\definecolor{lightgray}{RGB}{245, 245, 245}
+\definecolor{darkgray}{RGB}{64, 64, 64}
+\definecolor{accentblue}{RGB}{41, 128, 185}
+\definecolor{successgreen}{RGB}{39, 174, 96}
+\definecolor{codebackground}{RGB}{248, 248, 248}
+
+% Configure hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=jiitblue,
+    filecolor=magenta,
+    urlcolor=accentblue,
+    pdftitle={Library Management System Report},
+}
+
+% Configure tcolorbox
+\tcbuselibrary{skins,breakable}
+
+% Customize section titles
+\titleformat{\section}
+  {\color{jiitblue}\Large\bfseries}
+  {\color{jiitblue}\thesection}
+  {1em}
+  {\color{jiitblue}}
+
+\titleformat{\subsection}
+  {\color{accentblue}\large\bfseries}
+  {\color{accentblue}\thesubsection}
+  {1em}
+  {\color{accentblue}}
+
+% Code listing style
+\lstdefinestyle{sqlstyle}{
+    backgroundcolor=\color{codebackground},
+    commentstyle=\color{successgreen},
+    keywordstyle=\color{jiitblue}\bfseries,
+    numberstyle=\tiny\color{darkgray},
+    stringstyle=\color{accentblue},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=SQL,
+    frame=single,
+    rulecolor=\color{darkgray}
+}
+
+\lstset{style=sqlstyle}
+
+% Custom environments
+\newenvironment{keyfeatures}
+{%
+  \begin{tcolorbox}[
+    colback=lightgray,
+    colframe=accentblue,
+    title={\faLightbulb\ Key Features},
+    fonttitle=\bfseries,
+    left=10pt,
+    right=10pt,
+    breakable
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+\newenvironment{techbox}[1]
+{%
+  \begin{tcolorbox}[
+    colback=jiitblue!5,
+    colframe=jiitblue,
+    title={\faDatabase\ #1},
+    fonttitle=\bfseries,
+    left=10pt,
+    right=10pt,
+    breakable
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+\setlist[itemize]{leftmargin=15pt, itemsep=3pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=15pt, itemsep=3pt, parsep=0pt}
+
+% Header and Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Library Management System}}
+\fancyhead[R]{\small\textit{DBMS Project Report}}
+\fancyfoot[C]{\thepage}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \centering
+    \onehalfspacing
+
+    \Huge\textbf{Jaypee Institute of Information Technology}\\
+    \Large\textbf{Sector - 62, Noida}\\
+
+    \vspace{1cm}
+
+    % Replace with actual logo if available
+    \includegraphics[scale=2.6]{jiit_logo.jpg}\\[0.2cm]
+
+    \LARGE\textbf{Database Management Systems}\\[0.3cm]
+    \Large\textbf{Laboratory Project Report}\\[1cm]
+
+    \Huge\textcolor{jiitblue}{\textbf{Learning Resource Centre}}\\[0.5cm]
+
+    \Large\textbf{Submitted By:}\\[0.5cm]
+
+    \begin{tabular}{>{\bfseries}l l l}
+        Aarnya Jain   & B4 & 2401030209\\
+        Amolik Agarwal  & B4 & 2401030193\\
+        Vansh Garg & B4 & 2401030202\\
+    \end{tabular}
+
+    \vspace{0.6cm}
+    \normalsize\Large\textbf{Submitted to : Dr. Diksha Chawla}\\[0.5cm]
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% Main Content
+\section{Abstract}
+
+The Learning Resource Centre is a comprehensive web-based Library Management System designed to automate and streamline library operations in academic institutions. This project demonstrates the practical application of Database Management Systems (DBMS) concepts including relational database design, normalization, SQL query optimization, and transaction management.
+
+The system manages three core entities—Students, Staff, and Books—through a normalized relational database schema achieving Third Normal Form (3NF). Built using MySQL for database management, Node.js for the backend server, and vanilla JavaScript with HTML/CSS for the frontend, this system provides an intuitive neubrutalist user interface for seamless library operations.
+
+Key functionalities include user authentication, book cataloging, issue and return management, comprehensive search capabilities, and detailed reporting mechanisms. The implementation showcases advanced SQL features such as stored procedures, functions, complex joins, and dynamic queries.
+
+\section{Introduction}
+
+\subsection{Project Motivation}
+
+Modern educational institutions handle thousands of books, multiple user categories, and complex borrowing policies. Traditional manual library management is time-consuming, error-prone, and inefficient. This project addresses these challenges by implementing a digital solution that automates library workflows while maintaining data integrity and providing real-time access to library resources.
+
+\subsection{Objectives}
+
+The primary objectives of this project are:
+
+\begin{itemize}
+    \item Design and implement a normalized relational database following DBMS best practices
+    \item Develop efficient SQL queries, stored procedures, and functions for library operations
+    \item Create a user-friendly web interface for students and staff members
+    \item Implement role-based access control with separate authentication for students and staff
+    \item Provide comprehensive search and reporting capabilities
+    \item Ensure data consistency and integrity through foreign key constraints
+    \item Demonstrate proficiency in full-stack development with database integration
+\end{itemize}
+
+\subsection{System Scope}
+
+The Learning Resource Centre manages:
+\begin{itemize}
+    \item Student registration and profile management
+    \item Staff member registration and role assignment
+    \item Book inventory with categorization and shelf management
+    \item Book issue and return transactions with date tracking
+    \item Complete issue history with search functionality
+    \item Image storage for student and staff profiles
+\end{itemize}
+
+\section{System Architecture}
+
+\subsection{Technology Stack}
+
+\begin{techbox}{Technology Components}
+\begin{itemize}
+    \item \textbf{Database}: MySQL 8.0 - Relational Database Management System
+    \item \textbf{Backend}: Node.js with Express.js framework
+    \item \textbf{Frontend}: HTML5, CSS3, Vanilla JavaScript
+    \item \textbf{Design Pattern}: Neubrutalist UI design for modern aesthetics
+    \item \textbf{API Architecture}: RESTful API design principles
+\end{itemize}
+\end{techbox}
+
+\subsection{System Components}
+
+The system architecture follows a three-tier model:
+
+\begin{enumerate}
+    \item \textbf{Presentation Layer}: Web-based user interface with responsive design
+    \item \textbf{Application Layer}: Node.js server handling business logic and API endpoints
+    \item \textbf{Data Layer}: MySQL database with stored procedures and functions
+\end{enumerate}
+
+\subsection{API Endpoints}
+
+The system provides 20+ RESTful API endpoints for various operations:
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Endpoint} & \textbf{Function} \\
+\midrule
+\texttt{/login/student} & Student authentication \\
+\texttt{/login/staff} & Staff authentication \\
+\texttt{/books} & Fetch all books \\
+\texttt{/books/search} & Search books by column \\
+\texttt{/add/student} & Register new student \\
+\texttt{/add/staff} & Register new staff \\
+\texttt{/add/book} & Add book or update quantity \\
+\texttt{/issue} & Issue book to student \\
+\texttt{/return} & Return book from student \\
+\texttt{/info/issue\_history} & Fetch complete history \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Database Design}
+
+\subsection{Entity-Relationship Model}
+
+The database consists of four core entities with well-defined relationships:
+
+\begin{figure}[H]
+\begin{center}
+
+\includegraphics[scale=0.55]{EER.png}\\
+
+\end{center}
+\caption{Entity-Relationship Diagram for Library Management System}
+
+\end{figure}
+
+\tikzstyle{entity} = [rectangle, draw=jiitblue, fill=jiitblue!10,
+    text width=3cm, text centered, minimum height=1cm, thick]
+\tikzstyle{attribute} = [ellipse, draw=accentblue, fill=accentblue!5,
+    text width=2cm, text centered, minimum height=0.6cm, font=\small]
+\tikzstyle{relationship} = [diamond, draw=successgreen, fill=successgreen!10,
+    text width=2cm, text centered, minimum height=1cm, aspect=2]
+
+\subsection{Relational Schema}
+
+\textbf{Student} (\underline{enrollment\_no}, name, phno, email, branch, grad\_year, image, passwd)
+
+\textbf{Staff} (\underline{staff\_id}, name, phno, email, role, passwd, image)
+
+\textbf{Books} (\underline{isbn}, title, author, category, shelf\_no, quantity)
+
+\textbf{Issue\_Register} (enrollment\_no$^{FK}$, staff\_id$^{FK}$, isbn$^{FK}$, issue\_date, return\_date, return\_status)
+
+\vspace{0.3cm}
+\textbf{Foreign Key Constraints:}
+\begin{itemize}
+    \item Issue\_Register.enrollment\_no REFERENCES Student(enrollment\_no)
+    \item Issue\_Register.staff\_id REFERENCES Staff(staff\_id)
+    \item Issue\_Register.isbn REFERENCES Books(isbn)
+\end{itemize}
+
+\subsection{Normalization Analysis}
+
+\subsubsection{First Normal Form (1NF)}
+
+\textbf{Definition:} A relation is in 1NF if all attributes contain only atomic (indivisible) values and there are no repeating groups.
+
+\textbf{Verification for all tables:}
+\begin{itemize}
+    \item All columns contain single, atomic values (no arrays or complex structures)
+    \item Each column has a unique name
+    \item Each row is uniquely identifiable by primary key
+    \item No repeating groups exist
+\end{itemize}
+
+✅ \textbf{All tables satisfy 1NF}
+
+\subsubsection{Second Normal Form (2NF)}
+
+\textbf{Definition:} A relation is in 2NF if it is in 1NF and all non-key attributes are fully dependent on the entire primary key (no partial dependencies).
+
+\textbf{Analysis:}
+
+\textit{Student, Staff, Books:} These tables have single-column primary keys, making partial dependency impossible. All non-key attributes depend fully on the primary key.
+
+\textit{Issue\_Register:} While this table has a composite candidate key (enrollment\_no, isbn, issue\_date), all attributes depend on the complete key:
+\begin{itemize}
+    \item return\_date depends on the specific issue instance
+    \item return\_status depends on the specific transaction
+    \item staff\_id records who processed that particular issue
+\end{itemize}
+
+✅ \textbf{All tables satisfy 2NF}
+
+\subsubsection{Third Normal Form (3NF)}
+
+\textbf{Definition:} A relation is in 3NF if it is in 2NF and no transitive dependencies exist (non-key attributes depend only on the primary key, not on other non-key attributes).
+
+\textbf{Functional Dependencies:}
+
+\begin{lstlisting}[language=SQL, caption=Functional Dependencies Analysis]
+-- STUDENT TABLE
+enrollment_no -> name, phno, email, branch, grad_year, image, passwd
+(No transitive dependencies; each attribute depends directly on enrollment_no)
+
+-- STAFF TABLE
+staff_id -> name, phno, email, role, passwd, image
+(No transitive dependencies; each attribute depends directly on staff_id)
+
+-- BOOKS TABLE
+isbn -> title, author, category, shelf_no, quantity
+(No transitive dependencies; each attribute depends directly on isbn)
+
+-- ISSUE_REGISTER TABLE
+(enrollment_no, isbn, issue_date) -> staff_id, return_date, return_status
+(No transitive dependencies; return_status does NOT determine return_date)
+\end{lstlisting}
+
+
+
+✅ \textbf{All tables satisfy 3NF}
+
+
+
+\subsubsection{Justification for Four Tables}
+
+The database uses exactly four core tables because:
+\begin{itemize}
+    \item Each table represents a distinct real-world entity
+    \item The structure avoids unnecessary redundancy
+    \item Relationships are modeled through foreign keys rather than data duplication
+    \item The design minimizes the number of joins required for common operations
+    \item Additional tables would overcomplicate the design
+    \item Fewer tables would merge unrelated entities and violate normalization
+\end{itemize}
+
+\textbf{Conclusion:} Four tables represent the \textit{minimum, optimal, and normalized architecture} for this library management system.
+
+\section{SQL Implementation}
+
+\subsection{Stored Procedures}
+
+The system implements several stored procedures for complex operations:
+
+\subsubsection{User Authentication}
+
+\begin{lstlisting}[caption=Student Login Procedure]
+CREATE PROCEDURE StudentLogin (
+    IN p_username BIGINT,
+    IN p_password VARCHAR(50)
+)
+BEGIN
+    DECLARE v_count INT;
+    SELECT COUNT(*) INTO v_count
+    FROM student
+    WHERE enrollment_no = p_username AND passwd = p_password;
+    SELECT (v_count > 0) AS success;
+END;
+\end{lstlisting}
+
+\subsubsection{Book Issue Transaction}
+
+\begin{lstlisting}[caption=Issue Book Procedure with Validation]
+CREATE PROCEDURE issue_book(
+    IN stud_username BIGINT,
+    IN staff_username INT,
+    IN p_isbn VARCHAR(13)
+)
+proc: BEGIN
+    DECLARE student_exists INT DEFAULT 0;
+    DECLARE staff_exists INT DEFAULT 0;
+    DECLARE book_available INT DEFAULT 0;
+
+    -- Validate student
+    SELECT COUNT(*) INTO student_exists
+    FROM student WHERE enrollment_no = stud_username;
+    IF student_exists = 0 THEN
+        SELECT 0 AS success; LEAVE proc;
+    END IF;
+
+    -- Validate staff
+    SELECT COUNT(*) INTO staff_exists
+    FROM staff WHERE staff_id = staff_username;
+    IF staff_exists = 0 THEN
+        SELECT 3 AS success; LEAVE proc;
+    END IF;
+
+    -- Check book availability
+    SELECT COUNT(*) INTO book_available
+    FROM books WHERE isbn = p_isbn AND quantity > 0;
+    IF book_available = 0 THEN
+        SELECT 2 AS success; LEAVE proc;
+    END IF;
+
+    -- Execute transaction
+    UPDATE books SET quantity = quantity - 1 WHERE isbn = p_isbn;
+    INSERT INTO issue_register(enrollment_no, staff_id, isbn,
+                                issue_date, return_date, return_status)
+    VALUES (stud_username, staff_username, p_isbn,
+            CURDATE(), NULL, FALSE);
+    SELECT 1 AS success;
+END;
+\end{lstlisting}
+
+\subsection{User-Defined Functions}
+
+\subsubsection{Student Registration}
+
+\begin{lstlisting}[caption=Register Student Function]
+CREATE FUNCTION register_student(
+    enr BIGINT, sname VARCHAR(200), phn VARCHAR(15),
+    email VARCHAR(200), branch VARCHAR(50), grad_year INT,
+    img VARCHAR(255), passwd VARCHAR(50), staf_id INT
+)
+RETURNS INT DETERMINISTIC
+BEGIN
+    DECLARE staff_count INT DEFAULT 0;
+    DECLARE enr_count INT DEFAULT 0;
+
+    -- Verify staff authorization
+    SELECT COUNT(*) INTO staff_count
+    FROM staff WHERE staff_id = staf_id;
+    IF staff_count = 0 THEN RETURN 3; END IF;
+
+    -- Check duplicate enrollment
+    SELECT COUNT(*) INTO enr_count
+    FROM student WHERE enrollment_no = enr;
+    IF enr_count = 1 THEN RETURN 2; END IF;
+
+    -- Insert new student
+    INSERT INTO student VALUES
+        (enr, sname, phn, email, branch, grad_year, img, passwd);
+    RETURN 1;
+END;
+\end{lstlisting}
+
+\subsection{Complex Queries}
+
+\subsubsection{Issue History with Joins}
+
+\begin{lstlisting}[caption=Complete Issue History Query]
+CREATE PROCEDURE get_issue_history()
+BEGIN
+    SELECT
+        ir.enrollment_no,
+        s.name AS student_name,
+        ir.staff_id,
+        st.name AS staff_name,
+        ir.isbn,
+        b.title AS book_title,
+        ir.issue_date,
+        ir.return_date,
+        ir.return_status
+    FROM issue_register ir
+    JOIN student s ON ir.enrollment_no = s.enrollment_no
+    JOIN books b ON ir.isbn = b.isbn
+    JOIN staff st ON ir.staff_id = st.staff_id
+    ORDER BY ir.issue_date DESC;
+END;
+\end{lstlisting}
+
+\section{System Features}
+
+\subsection{Authentication System}
+
+\begin{keyfeatures}
+\begin{itemize}
+    \item Separate login portals for students and staff
+    \item Password-based authentication stored in database
+    \item Session management for authorized access
+    \item Role-based access control limiting functionality by user type
+\end{itemize}
+\end{keyfeatures}
+
+\subsection{Book Management}
+
+Staff members can:
+\begin{itemize}
+    \item Add new books to the inventory
+    \item Update book quantity for existing ISBNs
+    \item Delete books (with constraint checking for active issues)
+    \item Search books by title, author, ISBN, or category
+    \item View complete book catalog with shelf locations
+\end{itemize}
+
+\subsection{User Management}
+
+Administrative capabilities include:
+\begin{itemize}
+    \item Register new students with profile images
+    \item Register new staff members with role assignment
+    \item Delete users (with referential integrity checks)
+    \item Search and view user information
+    \item Update user profiles
+\end{itemize}
+
+\subsection{Transaction Management}
+
+The core library operations:
+\begin{itemize}
+    \item Issue books to students with automatic quantity decrement
+    \item Return books with date logging and quantity increment
+    \item Validation of all parties (student, staff, book) before transactions
+    \item Automatic timestamp recording for issue and return dates
+    \item Return status tracking (issued/returned)
+\end{itemize}
+
+\subsection{Reporting and Analytics}
+
+\begin{itemize}
+    \item Complete issue history with student, staff, and book details
+    \item Search functionality across multiple fields
+    \item Student-specific issue history
+    \item Currently issued books report
+    \item Overdue books tracking (via return\_date IS NULL)
+\end{itemize}
+
+\section{Implementation Details}
+
+\subsection{Database Connection}
+
+The Node.js server uses a connection pool for efficient database access:
+
+\begin{lstlisting}[language=JavaScript, caption=MySQL Connection Pool Configuration]
+const mysql = require('mysql2/promise');
+
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "your_password",
+  database: "testdb",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+\end{lstlisting}
+\newpage
+\subsection{File Structure Organization}
+
+\begin{verbatim}
+Library-Management-System/
+|-- public/
+|   `-- images/
+|       |-- staff/          # Staff profile images
+|       `-- students/       # Student profile images
+|-- src/
+|   |-- server/
+|   |   |-- db.js           # Database connection
+|   |   `-- package.json
+|   `-- style/
+|       |-- css/            # Stylesheets
+|       |-- js/             # Client-side scripts
+|       `-- *.html          # Web pages
+|-- run.sql                 # Database schema
+`-- dummy.sql               # Sample data
+\end{verbatim}
+
+\subsection{Security Considerations}
+
+\begin{itemize}
+    \item SQL injection prevention through parameterized queries
+    \item Input validation at both client and server sides
+    \item Foreign key constraints ensuring referential integrity
+    \item Cascade restrictions preventing unauthorized deletions
+    \item Session-based authentication for protected routes
+\end{itemize}
+
+
+
+\section{Real-World Applications}
+
+\subsection{Academic Institutions}
+
+This system directly addresses the needs of university and college libraries managing:
+\begin{itemize}
+    \item Thousands of books across multiple categories
+    \item Hundreds of students with different borrowing limits
+    \item Multiple staff members with varying responsibilities
+    \item Complex borrowing policies and fine calculations
+\end{itemize}
+
+\subsection{Scalability Considerations}
+
+The normalized database design allows for future enhancements:
+\begin{itemize}
+    \item Fine calculation based on overdue days
+    \item Reservation system for books
+    \item Multiple copies of same book with individual tracking
+    \item Book recommendation system based on borrowing history
+    \item Email notifications for due dates
+    \item Statistical reports for library administration
+\end{itemize}
+
+\section{Conclusion}
+
+The Learning Resource Centre successfully demonstrates a complete implementation of a database-driven web application following DBMS principles. The project achieves:
+
+\begin{itemize}
+    \item A fully normalized relational database in Third Normal Form
+    \item Efficient SQL operations using stored procedures and functions
+    \item Complex join queries demonstrating relational algebra
+    \item A user-friendly neubrutalist web interface
+    \item RESTful API architecture with 20+ endpoints
+    \item Role-based access control for students and staff
+    \item Comprehensive transaction management with referential integrity
+    \item Scalable architecture suitable for real-world deployment
+\end{itemize}
+
+\end{document}

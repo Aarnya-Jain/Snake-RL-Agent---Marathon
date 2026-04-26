@@ -1,0 +1,8 @@
+Model,Task,Score,Notes
+Linear Regression,Regression,R²=0.111,RMSE=14.43
+Logistic Regression,Classification,0.7739,
+Decision Tree,Classification,0.7652,
+SVM,Classification,0.8174,
+Random Forest,Classification,0.8348,
+ANN (MLP),Classification,0.8087,
+K-Means (K=3),Clustering,Unsupervised,3 tiers: Early / Mid / High
